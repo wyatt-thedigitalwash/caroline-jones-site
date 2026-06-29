@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Section spacing rule: remove top padding when consecutive sections share the same background */
+section[data-bg] + section[data-bg="dark"][data-bg] {
+  padding-top: 0;
+}
+
+section[data-bg="dark"] + section[data-bg="dark"] {
+  padding-top: 0;
+}
+
+section[data-bg="light"] + section[data-bg="light"] {
+  padding-top: 0;
+}

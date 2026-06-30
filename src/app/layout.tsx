@@ -1,21 +1,7 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Libre_Baskerville } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
-
-const playfairDisplay = Playfair_Display({
-  variable: "--font-playfair-display",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const libreBaskerville = Libre_Baskerville({
-  variable: "--font-libre-baskerville",
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const siteUrl = "https://carolinejones.com";
 
@@ -31,6 +17,12 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
+  themeColor: "#DDE2CD",
   openGraph: {
     title: "Caroline Jones | Singer-Songwriter & Multi-Instrumentalist",
     description:
@@ -38,7 +30,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Caroline Jones",
     type: "website",
-    images: [{ url: "/og-image.png" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
@@ -85,11 +77,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${playfairDisplay.variable} ${libreBaskerville.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased">
       <head>
+        <link rel="stylesheet" href="https://use.typekit.net/acl6kai.css" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -102,7 +92,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:bg-[#5D3635] focus:text-[#DDE2CD] focus:px-4 focus:py-2 focus:font-[family-name:var(--font-body)] focus:text-sm"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 :z-[100] focus:bg-[#5D3635] focus:text-[#DDE2CD] focus:px-4 focus:py-2 focus:text-sm"
         >
           Skip to main content
         </a>

@@ -17,7 +17,7 @@ export default function Videos() {
           "url(/backgrounds/CarolineJones_DesktopBackground_1.jpg)",
       }}
     >
-      <div className="absolute inset-0 bg-[#5D3635]/70" />
+      <div className="absolute inset-0 bg-[#000000]/45" />
 
       <div className="relative z-10">
         <h2 className="sr-only">Videos</h2>

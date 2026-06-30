@@ -25,8 +25,6 @@ export default function Hero() {
             good omen
           </h1>
 
-          <hr className="mx-auto mt-10 w-full max-w-[180px] border-t border-[#DDE2CD]/50" aria-hidden="true" />
-
           <a
             href="https://carolinejones.ffm.to/goodomenalbum"
             target="_blank"

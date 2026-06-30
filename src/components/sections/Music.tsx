@@ -40,15 +40,11 @@ export default function Music() {
               className="aspect-square w-full object-cover"
             />
 
-            <h3 className="mt-6 font-[family-name:var(--font-heading)] text-2xl italic text-[#5D3635]">
-              {album.title}
-            </h3>
-
             <a
               href={album.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.2em] text-[#5D3635] underline underline-offset-4 decoration-[0.5px] hover:opacity-70"
+              className="mt-6 font-[family-name:var(--font-body)] text-sm uppercase tracking-[0.2em] text-[#5D3635] underline underline-offset-4 decoration-[0.5px] hover:opacity-70"
             >
               Listen Now
               <span className="sr-only"> - {album.title} (opens in new tab)</span>

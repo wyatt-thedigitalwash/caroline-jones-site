@@ -3,25 +3,23 @@
 :root {
   --background: #DDE2CD;
   --foreground: #5D3635;
-  --font-heading: var(--font-playfair-display);
-  --font-body: var(--font-libre-baskerville);
+  --font-heading: "professor", Georgia, serif;
+  --font-body: "benguiat-pro-itc", Georgia, serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-heading: var(--font-playfair-display);
-  --font-body: var(--font-libre-baskerville);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), Georgia, serif;
+  font-family: var(--font-body);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading), Georgia, serif;
+  font-family: var(--font-heading);
 }
 
 /* Focus-visible styles for keyboard navigation */

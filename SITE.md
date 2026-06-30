@@ -17,9 +17,9 @@
 ---
 
 ## Typography
-- Headlines / subheads: Playfair Display (Google Fonts) -- placeholder for Professor Regular (Adobe Fonts), to be swapped before launch
-- Body copy: Libre Baskerville (Google Fonts) -- placeholder for Benguiat Pro ITC Book Condensed (Adobe Fonts), to be swapped before launch
-- Load both via next/font/google
+- Headlines / subheads: Professor (Adobe Fonts, loaded via Typekit)
+- Body copy: Benguiat Pro ITC (Adobe Fonts, loaded via Typekit)
+- Loaded via Adobe Typekit stylesheet: https://use.typekit.net/acl6kai.css
 - Headline font: use for all h1, h2, h3 and section titles
 - Body font: use for all paragraph copy, labels, nav links, form fields
 
@@ -113,7 +113,7 @@ Lauded by Rolling Stone as "an ambitious, entrepreneurial guitar heroine primed 
 ---
 
 ## Placeholder Log
-- Font swap pending: Playfair Display standing in for Professor Regular; Libre Baskerville standing in for Benguiat Pro ITC. Swap when Adobe Fonts kit is available.
+- Font swap complete: Professor and Benguiat Pro ITC loaded via Adobe Typekit.
 - Subscribe form: fields built, Laylo wired (email + phone). Requires LAYLO_API_KEY in env.
 
 ---

@@ -382,6 +382,14 @@ export default function Footer() {
                   {status === 'loading' ? 'Submitting...' : 'Subscribe'}
                 </button>
               </div>
+              <p className="mt-4 text-center font-[family-name:var(--font-body)] text-[10px] leading-relaxed text-[#DDE2CD]/60">
+                By submitting this form, you agree to the{" "}
+                <a href="https://www.bigmachinerecords.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#DDE2CD]">Big Machine Records Privacy Policy</a>
+                , and Laylo&apos;s{" "}
+                <a href="https://laylo.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#DDE2CD]">Terms</a>
+                {" "}and{" "}
+                <a href="https://laylo.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#DDE2CD]">Privacy Policy</a>.
+              </p>
             </form>
           )}
         </div>

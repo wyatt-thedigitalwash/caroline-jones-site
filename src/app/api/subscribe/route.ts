@@ -1,188 +1,127 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const LAYLO_URL = 'https://laylo.com/api/graphql';
+
 /* ------------------------------------------------------------------ */
-/*  In-memory rate limiter (resets on deploy / restart)                */
+/*  Rate limiting: in-memory IP map, 3 submissions per 5 minutes      */
 /* ------------------------------------------------------------------ */
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW = 5 * 60 * 1000; // 5 minutes
+const RATE_LIMIT_WINDOW = 5 * 60 * 1000;
 const RATE_LIMIT_MAX = 3;
+const ipMap = new Map<string, { count: number; resetAt: number }>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
+  const entry = ipMap.get(ip);
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    ipMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
     return false;
   }
-
-  entry.count += 1;
+  entry.count++;
   return entry.count > RATE_LIMIT_MAX;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function sanitize(value: unknown): string {
-  if (typeof value !== 'string') return '';
-  return value.trim().replace(/[<>]/g, '');
-}
-
-function validateFields(body: Record<string, unknown>): string | null {
-  const email = body.email;
-  if (typeof email !== 'string' || !EMAIL_RE.test(email)) {
-    return 'A valid email address is required.';
-  }
-  if (email.length > 254) return 'Email is too long.';
-
-  const phone = body.phone;
-  if (phone !== undefined && phone !== '') {
-    if (typeof phone !== 'string' || phone.length > 20) return 'Phone number is too long.';
-  }
-
-  const zip = body.zip;
-  if (zip !== undefined && zip !== '') {
-    if (typeof zip !== 'string' || zip.length > 10) return 'Zip code is too long.';
-  }
-
-  const country = body.country;
-  if (country !== undefined && country !== '') {
-    if (typeof country !== 'string' || country.length > 3) return 'Invalid country code.';
-  }
-
-  return null;
-}
-
-function toE164(phone: string): string {
-  const digits = phone.replace(/\D/g, '');
-  if (digits.startsWith('1') && digits.length === 11) return `+${digits}`;
-  if (digits.length === 10) return `+1${digits}`;
-  return `+${digits}`;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Laylo GraphQL helper                                               */
-/* ------------------------------------------------------------------ */
-const LAYLO_GRAPHQL_URL = 'https://laylo.com/api/graphql';
-
-async function layloSubscribe(
-  apiKey: string,
-  type: 'email' | 'phone',
-  value: string,
-): Promise<void> {
-  const mutation = `
-    mutation Subscribe($input: SubscribeInput!) {
-      subscribe(input: $input) {
-        success
-      }
-    }
-  `;
-
-  const res = await fetch(LAYLO_GRAPHQL_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      query: mutation,
-      variables: {
-        input: {
-          type,
-          value,
-          source: 'carolinejones.com',
-        },
-      },
-    }),
-  });
-
-  const json = await res.json();
-
-  if (json.errors && json.errors.length > 0) {
-    throw new Error(json.errors[0].message || 'Laylo GraphQL error');
-  }
 }
 
 /* ------------------------------------------------------------------ */
 /*  POST handler                                                       */
 /* ------------------------------------------------------------------ */
 export async function POST(request: NextRequest) {
-  try {
-    // Rate limiting
-    const forwarded = request.headers.get('x-forwarded-for');
-    const ip = forwarded?.split(',')[0]?.trim() || 'unknown';
-
-    if (isRateLimited(ip)) {
-      return NextResponse.json(
-        { error: 'Too many requests. Please try again later.' },
-        { status: 429 },
-      );
-    }
-
-    // Parse body
-    let body: Record<string, unknown>;
-    try {
-      body = await request.json();
-    } catch {
-      return NextResponse.json(
-        { error: 'Invalid request body.' },
-        { status: 400 },
-      );
-    }
-
-    // Honeypot -- if the hidden "website" field has a value, silently succeed
-    if (body.website) {
-      return NextResponse.json({ success: true });
-    }
-
-    // Validate
-    const validationError = validateFields(body);
-    if (validationError) {
-      return NextResponse.json({ error: validationError }, { status: 400 });
-    }
-
-    // Check Laylo API key
-    const layloApiKey = process.env.LAYLO_API_KEY;
-    if (!layloApiKey) {
-      console.error('[subscribe] LAYLO_API_KEY is not set');
-      return NextResponse.json(
-        { error: 'Subscription service is temporarily unavailable.' },
-        { status: 500 },
-      );
-    }
-
-    const email = sanitize(body.email);
-    const phone = sanitize(body.phone);
-
-    // Subscribe email via Laylo (primary)
-    try {
-      await layloSubscribe(layloApiKey, 'email', email);
-    } catch (err) {
-      console.error('[subscribe] Laylo email subscription failed:', err);
-      return NextResponse.json(
-        { error: 'Something went wrong. Please try again.' },
-        { status: 500 },
-      );
-    }
-
-    // Subscribe phone via Laylo (secondary, non-blocking)
-    if (phone) {
-      try {
-        const formattedPhone = toE164(phone);
-        await layloSubscribe(layloApiKey, 'phone', formattedPhone);
-      } catch (err) {
-        console.error('[subscribe] Laylo phone subscription failed (non-blocking):', err);
-      }
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error('[subscribe] Unexpected error:', err);
+  // Rate limiting
+  const forwarded = request.headers.get('x-forwarded-for');
+  const ip = forwarded?.split(',')[0]?.trim() ?? 'unknown';
+  if (isRateLimited(ip)) {
     return NextResponse.json(
-      { error: 'An unexpected error occurred.' },
+      { ok: false, error: 'Too many requests. Please try again later.' },
+      { status: 429 },
+    );
+  }
+
+  let body: {
+    email?: string;
+    phone?: string;
+    zip?: string;
+    country?: string;
+    website?: string;
+  };
+
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json(
+      { ok: false, error: 'Invalid request body.' },
+      { status: 400 },
+    );
+  }
+
+  // Honeypot: if the hidden "website" field is filled, silently succeed
+  if (body.website) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const email = (body.email ?? '').trim().toLowerCase();
+  const phone = (body.phone ?? '').trim();
+
+  // Validation
+  if (!email || !EMAIL_RE.test(email) || email.length > 254) {
+    return NextResponse.json(
+      { ok: false, error: 'A valid email address is required.' },
+      { status: 400 },
+    );
+  }
+
+  if (phone.length > 20) {
+    return NextResponse.json(
+      { ok: false, error: 'Phone number is too long.' },
+      { status: 400 },
+    );
+  }
+
+  // Laylo API key
+  const layloApiKey = process.env.LAYLO_API_KEY;
+  if (!layloApiKey) {
+    console.error('[subscribe] LAYLO_API_KEY is not set');
+    return NextResponse.json(
+      { ok: false, error: 'Subscription service is temporarily unavailable.' },
       { status: 500 },
     );
   }
+
+  // ---------------------------------------------------------------
+  // Laylo (fire-and-forget)
+  // A Laylo failure must never affect the user-facing response.
+  // ---------------------------------------------------------------
+  try {
+    const layloHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${layloApiKey}`,
+    };
+
+    // Call 1: subscribe by email
+    fetch(LAYLO_URL, {
+      method: 'POST',
+      headers: layloHeaders,
+      body: JSON.stringify({
+        query: `mutation($email: String) { subscribeToUser(email: $email) }`,
+        variables: { email },
+      }),
+    }).catch(() => {});
+
+    // Call 2: subscribe by phone (only if provided)
+    if (phone) {
+      const digits = phone.replace(/\D/g, '');
+      const formatted = digits.startsWith('1') ? `+${digits}` : `+1${digits}`;
+
+      fetch(LAYLO_URL, {
+        method: 'POST',
+        headers: layloHeaders,
+        body: JSON.stringify({
+          query: `mutation($phoneNumber: String) { subscribeToUser(phoneNumber: $phoneNumber) }`,
+          variables: { phoneNumber: formatted },
+        }),
+      }).catch(() => {});
+    }
+  } catch {
+    // Laylo errors are silently swallowed
+  }
+
+  return NextResponse.json({ ok: true });
 }

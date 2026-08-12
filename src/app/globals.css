@@ -5,11 +5,29 @@
   --foreground: #5D3635;
   --font-heading: "professor", Georgia, serif;
   --font-body: "benguiat-pro-itc", Georgia, serif;
+
+  /* Design tokens consumed by the legal / consent components. Mapped to the
+     Caroline Jones palette: cream surfaces, brown text, no separate accent
+     color (brown is the single ink). */
+  --background-primary: #DDE2CD;
+  --background-alt: #DDE2CD;
+  --text-header: #5D3635;
+  --text-body: #5D3635;
+  --text-accent: #5D3635;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Aliases so the ported legal/consent components resolve to Caroline's system */
+  --color-background-primary: var(--background-primary);
+  --color-background-alt: var(--background-alt);
+  --color-text-header: var(--text-header);
+  --color-text-body: var(--text-body);
+  --color-text-accent: var(--text-accent);
+  --font-display: "professor", Georgia, serif;
+  --font-body: "benguiat-pro-itc", Georgia, serif;
 }
 
 body {
@@ -20,6 +38,25 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
+}
+
+/* Legal pages: render headings in the readable body serif, not the cursive
+   display font. This rule is unlayered and more specific than the global
+   h1..h6 rule above, so it wins (Tailwind's font-body utility is layered and
+   loses to the unlayered heading rule, which is why a class alone did not). */
+.legal-typeset :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-body);
+}
+
+/* Offset in-page anchor jumps (nav links, including /#music from a legal page)
+   for the fixed header, so the target section lands just below the header
+   rather than hidden under it. Scoped to the home sections so it does not stack
+   on the legal pages' own anchor scroll-margin. */
+#music,
+#videos,
+#about,
+#subscribe {
+  scroll-margin-top: 4.5rem;
 }
 
 /* Focus-visible styles for keyboard navigation */
@@ -52,4 +89,54 @@ section[data-bg="light"] + section[data-bg="light"] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Legal / Policy Pages
+   Caroline Jones uses a single brown ink on cream, so hyperlinks inside legal
+   copy are brown and underlined (no separate accent color) to stay clearly
+   distinguishable as links against the cream background. */
+.legal-prose a {
+  color: #5D3635;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  transition: opacity 200ms;
+  word-break: break-word;
+}
+.legal-prose a:hover {
+  opacity: 0.7;
+}
+
+/* Cookie Consent / Terms Gate Buttons
+   Flat rectangular buttons per SITE.md (no pills, no gradients, no shadows):
+   solid brown fill / cream text primary, transparent / brown border ghost. */
+.cc-btn {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-body);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  text-align: center;
+  border: 1px solid #5D3635;
+  transition: all 200ms;
+  cursor: pointer;
+}
+.cc-btn-primary {
+  background: #5D3635;
+  color: #DDE2CD;
+  border-color: #5D3635;
+}
+.cc-btn-primary:hover {
+  background: transparent;
+  color: #5D3635;
+}
+.cc-btn-ghost {
+  background: transparent;
+  color: #5D3635;
+}
+.cc-btn-ghost:hover {
+  background: #5D3635;
+  color: #DDE2CD;
 }

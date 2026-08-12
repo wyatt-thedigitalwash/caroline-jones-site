@@ -54,8 +54,7 @@ Sections in order:
 3. Videos -- 4 YouTube embeds
 4. Shop -- merch visual and external link
 5. About -- bio and artist photo
-6. Subscribe -- fan signup form (placeholder wiring)
-7. Footer -- logo, socials
+6. Footer -- logo, socials, and the Laylo subscribe form (carries the #subscribe anchor)
 
 Nav items: Music | Videos | Shop | About | Subscribe
 (No Tour section -- no current dates)
@@ -93,13 +92,28 @@ Lauded by Rolling Stone as "an ambitious, entrepreneurial guitar heroine primed 
 ---
 
 ## Subscribe Form Fields
-- First Name
-- Last Name
-- Email
-- Phone
-- Zip Code
-- Country
-- Integration: Laylo (email + phone)
+- Email (required, full width)
+- Phone (required for United States / Canada, inert elsewhere)
+- Country (dropdown, United States first and default)
+
+Three fields only. Verified against the live Laylo API: `subscribeToUser` accepts
+exactly four arguments and nothing else --
+
+| Argument | Type | Notes |
+|---|---|---|
+| `email` | String | the durable identifier |
+| `phoneNumber` | String | E.164, drives the SMS opt-in text |
+| `userId` | ID | which Laylo account to subscribe to; inferred from the API key |
+| `productId` | ID | optional, ties a signup to a specific drop/release |
+
+There is NO Laylo field for first/last name, zip, country, birthday, tags or
+custom data, so any such input would be discarded on every submission. Name and
+Zip Code were removed for exactly that reason. Country is kept because it is
+functional rather than stored: it decides whether the fan is SMS-eligible and
+therefore whether the phone is required and forwarded at all.
+
+If geographic data on fans is ever wanted, the fix is adding a real store (an
+ESP), not re-adding fields that go nowhere.
 
 ---
 
@@ -114,7 +128,15 @@ Lauded by Rolling Stone as "an ambitious, entrepreneurial guitar heroine primed 
 
 ## Placeholder Log
 - Font swap complete: Professor and Benguiat Pro ITC loaded via Adobe Typekit.
-- Subscribe form: fields built, Laylo wired (email + phone). Requires LAYLO_API_KEY in env.
+- Subscribe form: fully wired to Laylo (email + phone). Requires LAYLO_API_KEY in env.
+  Trimmed to 3 fields after confirming Laylo's accepted arguments (see above).
+  Lives in src/components/SubscribeForm.tsx, rendered by the Footer. Logic in
+  src/lib/laylo.ts + src/lib/subscribe-validation.ts, route at /api/subscribe.
+  Ported from the canonical UNIVERSAL-SUBSCRIBE-PROMPT buildout (Hunter Flynn),
+  adapted because Laylo is the ONLY store here and therefore decides the
+  user-facing response instead of being best-effort.
+- The unused src/components/sections/Subscribe.tsx placeholder was deleted; it
+  faked a success state and was never rendered.
 
 ---
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 const navLinks = [
@@ -70,6 +71,17 @@ const socials = [
 ];
 
 export default function Header() {
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  // The nav targets are in-page sections on the home route. From any other
+  // route (e.g. /legal/*) a bare "#music" would look for that section on the
+  // current page and go nowhere, so prefix with "/" to navigate home first and
+  // then scroll to the section. The logo "#" becomes "/" (home) off-route.
+  const resolveHref = (href: string) => {
+    if (href.startsWith("http")) return href;
+    if (href === "#") return onHome ? "#" : "/";
+    return onHome ? href : `/${href}`;
+  };
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const mobileNavRef = useRef<HTMLElement>(null);
@@ -149,7 +161,7 @@ export default function Header() {
       }`}
     >
       <div className="mx-auto flex h-14 items-center justify-between px-6 md:h-16 md:px-10">
-        <a href="#" aria-label="Caroline Jones - Back to top">
+        <a href={resolveHref("#")} aria-label="Caroline Jones - Back to top">
           <Image
             src={menuOpen ? "/logos/CarolineJones_LogoBlack.png" : logoSrc}
             alt="Caroline Jones"
@@ -167,7 +179,7 @@ export default function Header() {
             return (
               <a
                 key={link.href}
-                href={link.href}
+                href={resolveHref(link.href)}
                 {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className={`font-[family-name:var(--font-body)] text-sm uppercase tracking-[0.15em] ${textColor} no-underline hover:underline hover:underline-offset-4 hover:decoration-[0.5px] transition-colors duration-300`}
               >
@@ -223,7 +235,7 @@ export default function Header() {
             return (
               <a
                 key={link.href}
-                href={link.href}
+                href={resolveHref(link.href)}
                 onClick={() => closeMenu()}
                 {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="min-h-[44px] flex items-center font-[family-name:var(--font-heading)] text-2xl italic text-[#5D3635] transition-opacity hover:opacity-60"

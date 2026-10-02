@@ -3,7 +3,7 @@ import Link from "next/link";
 import CookieChoicesLink from "@/components/legal/CookieChoicesLink";
 import SubscribeForm from "@/components/SubscribeForm";
 
-const legalLinks = [
+export const legalLinks = [
   { label: "Terms", href: "/legal/terms" },
   { label: "Privacy", href: "/legal/privacy" },
   { label: "Copyright (DMCA)", href: "/legal/dmca" },

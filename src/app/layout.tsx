@@ -1,6 +1,4 @@
-import type { Metadata } from "next";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import type { Metadata, Viewport } from "next";
 import CookieConsent from "@/components/consent/CookieConsent";
 import TermsGate from "@/components/consent/TermsGate";
 import AnchorScroll from "@/components/shared/AnchorScroll";
@@ -25,7 +23,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  themeColor: "#DDE2CD",
   openGraph: {
     title: "Caroline Jones | Singer-Songwriter & Multi-Instrumentalist",
     description:
@@ -42,6 +39,10 @@ export const metadata: Metadata = {
       "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Good Omen, watch music videos, shop merch, and stay connected.",
     images: ["/og-image.png"],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#DDE2CD",
 };
 
 const jsonLd = {
@@ -100,9 +101,9 @@ export default function RootLayout({
           Skip to main content
         </a>
         <AnchorScroll />
-        <Header />
-        <main id="main-content" className="flex-1">{children}</main>
-        <Footer />
+        {/* Header, <main> and Footer live in each route group's layout, so
+            campaign landing pages can opt out of the main site chrome. */}
+        {children}
         {/* Cookie consent banner. Shows once per new visitor, persisted in
             localStorage; injects nothing before consent is granted. */}
         <CookieConsent />

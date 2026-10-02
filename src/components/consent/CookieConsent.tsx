@@ -244,6 +244,7 @@ export default function CookieConsent() {
           type="button"
           onClick={openModal}
           aria-label="Cookie choices"
+          data-cookie-pill
           className="fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full border border-text-body/40 bg-background-alt px-4 py-2 font-body text-xs text-text-accent shadow-lg transition-colors hover:border-text-body/60 hover:text-text-header"
         >
           <svg

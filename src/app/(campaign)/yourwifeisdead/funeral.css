@@ -1,0 +1,614 @@
+/* "The Funeral of Her" pre-save page.
+   Layout: a framed full-screen stage holding the invitation, opened. Phones
+   stack the lockup (garland + title) over the details; from 1024px the two sit
+   side by side like facing pages, with a fold between. */
+
+:root {
+  --fi-ink: #080707;
+  --fi-gold: #c99c72;
+  --fi-gold-hi: #e7bc90;
+  --fi-gold-dim: rgba(201, 156, 114, 0.62);
+  --fi-champagne: #ecd2ab;
+  /* Supporting copy: ~6:1 on the paper, so small italic stays legible. */
+  --fi-gold-soft: #b4936e;
+}
+
+/* ---------- Page-wide overrides (only while this page is mounted) ---------- */
+
+body:has(.fi-page) {
+  background: var(--fi-ink);
+  --background-alt: #15110e;
+  --text-header: var(--fi-gold-hi);
+  --text-body: var(--fi-gold);
+  --text-accent: var(--fi-gold);
+}
+body:has(.fi-page) .cc-btn { border-color: var(--fi-gold); }
+body:has(.fi-page) .cc-btn-primary { background: var(--fi-gold); color: var(--fi-ink); }
+body:has(.fi-page) .cc-btn-primary:hover,
+body:has(.fi-page) .cc-btn-ghost { background: transparent; color: var(--fi-gold); }
+body:has(.fi-page) .cc-btn-ghost:hover { background: var(--fi-gold); color: var(--fi-ink); }
+body:has(.fi-page) *:focus-visible { outline-color: var(--fi-gold-hi); }
+/* The footer carries a Cookie Choices link, so the floating pill would only
+   sit on top of the frame here. */
+body:has(.fi-page) [data-cookie-pill] { display: none; }
+
+/* ---------- Page + stage ---------- */
+
+.fi-page {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  overflow-x: clip;
+  background: var(--fi-ink) url("/funeral/paper-tile.jpg") repeat;
+  color: var(--fi-gold);
+  font-family: var(--font-funeral), Georgia, serif;
+}
+
+.fi-stage {
+  /* --u is one pixel of the source art: it scales the frame pieces. --d is the
+     base size for the details column. */
+  --u: clamp(0.5px, 0.085vmin, 0.85px);
+  --inset: 10px;
+  --d: clamp(12px, min(3.3vw, 1.8svh), 16px);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100svh;
+  /* Phones and tablets anchor the garland to the top of the frame; desktop
+     centers the spread. */
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--inset) + 76 * var(--u)) calc(var(--inset) + 14 * var(--u))
+    calc(var(--inset) + 72 * var(--u));
+}
+
+@media (min-width: 768px) {
+  .fi-stage { --inset: 18px; --d: 15px; }
+}
+@media (min-width: 1024px) {
+  .fi-stage {
+    --d: clamp(15px, 2.2svh, 24px);
+    align-items: center;
+    padding-inline: calc(var(--inset) + 90 * var(--u));
+  }
+}
+@media (min-width: 1280px) {
+  .fi-stage { --inset: 24px; }
+}
+
+/* ---------- Atmosphere ---------- */
+
+.fi-atmos {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fi-atmos > div { position: absolute; }
+
+/* Candlelight behind the lettering, breathing slowly. */
+.fi-glow {
+  left: 50%;
+  top: 46%;
+  width: 130vmin;
+  height: 100vmin;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgba(201, 156, 114, 0.13), rgba(201, 156, 114, 0.04) 55%, transparent);
+  animation: fi-breathe 7s ease-in-out infinite alternate;
+}
+
+.fi-vignette {
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 46%, transparent 40%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+/* Two layers of gold dust drifting upward at different speeds. Each loop moves
+   a whole number of tiles, so it never jumps. */
+.fi-dust {
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(231, 188, 144, 0.5) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(231, 188, 144, 0.3) 0 0.7px, transparent 1.3px);
+  background-size: 230px 260px, 150px 170px;
+  background-position: 0 0, 60px 90px;
+  opacity: 0.45;
+  animation: fi-drift 70s linear infinite;
+}
+.fi-dust-2 {
+  background-size: 310px 340px, 190px 210px;
+  background-position: 120px 40px, 20px 150px;
+  opacity: 0.3;
+  animation-duration: 110s;
+  animation-name: fi-drift-2;
+}
+
+/* ---------- Invitation layout ---------- */
+
+.fi-invite {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fi-lockup {
+  --lw: min(calc(100vw - 2 * var(--inset) - 36 * var(--u)), 600px, 50svh);
+  /* Lettering scale on phones: a touch larger than the source proportions so
+     the small caps stay readable. */
+  --k: 1.18;
+  /* Vertical offset for the title block (desktop centers it in the arch). */
+  --ty: 0cqw;
+  position: relative;
+  width: var(--lw);
+  flex-shrink: 0;
+  /* Box ends just under "Her."; the vines hang past it, beside the details. */
+  aspect-ratio: 100 / 69;
+  container-type: inline-size;
+}
+
+.fi-fold { display: none; }
+
+.fi-details {
+  display: flex;
+  width: 100%;
+  max-width: 26rem;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Phones and tablets: the invitation fills the frame's height and the seal
+   settles at the bottom, just above the frame's lower ornament. */
+@media (max-width: 1023px) {
+  .fi-invite { align-self: stretch; }
+  .fi-details { flex: 1; }
+  .fi-details .fi-cta { margin-block: auto; }
+  .fi-details .fi-seal { --seal-pad: calc(var(--d) * 0.6); padding-top: var(--seal-pad); }
+  /* Keep the rule through the wax center, below the added padding. */
+  .fi-details .fi-seal::before { top: calc(var(--seal-pad) + (100% - var(--seal-pad)) * 0.407); }
+}
+
+@media (min-width: 1024px) {
+  .fi-invite {
+    display: grid;
+    width: auto;
+    grid-template-columns: auto 1px auto;
+    align-items: center;
+    column-gap: clamp(2.5rem, 5vw, 6.5rem);
+  }
+
+  .fi-lockup {
+    --lw: min(44vw, calc((100svh - 2 * var(--inset) - 120 * var(--u)) * 965 / 904), 880px);
+    --k: 1.1;
+    /* Title sits high in the arch to leave room for the cover below it. */
+    --ty: -3.5cqw;
+    aspect-ratio: 965 / 904;
+  }
+
+  .fi-fold {
+    position: relative;
+    display: block;
+    width: 1px;
+    height: 72%;
+    background: linear-gradient(transparent, var(--fi-gold-dim) 25%, var(--fi-gold-dim) 75%, transparent);
+    opacity: 0.55;
+    animation: fi-fade 2s ease-out 1.4s both;
+  }
+  .fi-fold::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--fi-gold);
+    background: var(--fi-ink);
+    translate: -50% -50%;
+    rotate: 45deg;
+  }
+
+  .fi-details {
+    width: clamp(320px, 30vw, 500px);
+    max-width: none;
+  }
+}
+
+/* ---------- Lockup lettering (positions in cqw of the arch) ---------- */
+
+.fi-garland {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  animation: fi-settle 2s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+}
+
+.fi-title {
+  margin: 0;
+  font: inherit;
+}
+
+.fi-caps {
+  margin: 0;
+  font-family: var(--font-funeral), Georgia, serif;
+  font-weight: 500;
+  font-variant-numeric: lining-nums;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  /* Balance the trailing tracking so lines stay optically centered. */
+  padding-left: 0.14em;
+  color: var(--fi-gold);
+}
+
+.fi-funeral,
+.fi-of,
+.fi-her {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  translate: 0 -50%;
+}
+.fi-funeral {
+  top: calc(34.85cqw + var(--ty));
+  font-size: calc(6.08cqw * var(--k));
+  letter-spacing: 0.1em;
+  padding-left: 0.1em;
+  color: var(--fi-champagne);
+  text-shadow: 0 0 28px rgba(236, 210, 171, 0.18);
+  animation: fi-rise 1.6s ease-out 0.5s both;
+}
+.fi-of {
+  top: calc(41.07cqw + var(--ty) * 1.12);
+  font-size: calc(5.2cqw * var(--k));
+  font-style: italic;
+  letter-spacing: 0.02em;
+  padding-left: 0;
+  text-transform: none;
+  color: var(--fi-gold);
+  animation: fi-rise 1.4s ease-out 0.75s both;
+}
+
+/* "Her." writes itself in, left to right, like ink. */
+.fi-her {
+  top: calc(55.37cqw + var(--ty) * 1.5);
+  left: 50%;
+  right: auto;
+  width: 46.63cqw;
+  translate: calc(-50% - 0.78cqw) -50%;
+  -webkit-mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+  mask-image: linear-gradient(90deg, #000 42%, transparent 58%);
+  -webkit-mask-size: 260% 100%;
+  mask-size: 260% 100%;
+  animation: fi-ink 2.6s cubic-bezier(0.45, 0, 0.3, 1) 1s both;
+}
+.fi-her img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---------- Cover art (desktop) ----------
+   Square under "Her.", between the lower vines. */
+
+.fi-cover { display: none; }
+
+@media (min-width: 1024px) {
+  .fi-cover {
+    position: absolute;
+    left: 50%;
+    top: calc(70.5cqw + var(--ty) * 1.5);
+    display: flex;
+    width: 22cqw;
+    aspect-ratio: 1;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
+    translate: -50% 0;
+    border: 1px solid rgba(201, 156, 114, 0.6);
+    background: rgba(8, 7, 7, 0.75);
+    box-shadow: inset 0 0 0 4px rgba(8, 7, 7, 0.9), inset 0 0 0 5px rgba(201, 156, 114, 0.22),
+      0 14px 36px rgba(0, 0, 0, 0.65);
+    animation: fi-rise 1.6s ease-out 1.6s both;
+  }
+  .fi-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fi-cover-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9cqw;
+    padding: 2cqw;
+    text-align: center;
+  }
+  .fi-cover-placeholder cite {
+    font-size: 2.3cqw;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.15;
+    color: var(--fi-champagne);
+  }
+  .fi-cover-placeholder span {
+    font-size: 1.05cqw;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    padding-left: 0.3em;
+    text-transform: uppercase;
+    color: var(--fi-gold-soft);
+  }
+}
+
+/* ---------- Details ----------
+   Three groups: when (date + time between rules), the invitation (line,
+   button, song), and the seal. */
+
+.fi-when,
+.fi-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fi-rise 1.2s ease-out both;
+}
+.fi-when { animation-delay: 1.5s; }
+.fi-cta {
+  gap: calc(var(--d) * 1.1);
+  padding-block: calc(var(--d) * 1.5);
+  animation-delay: 1.9s;
+}
+
+.fi-rule { height: auto; }
+.fi-rule-long { width: calc(var(--d) * 14); margin-bottom: calc(var(--d) * 1.15); }
+.fi-rule-short { width: calc(var(--d) * 8.5); margin-top: calc(var(--d) * 1.3); opacity: 0.75; }
+
+.fi-date {
+  font-size: calc(var(--d) * 2.8);
+  letter-spacing: 0.1em;
+  padding-left: 0.1em;
+  color: var(--fi-champagne);
+  text-shadow: 0 0 24px rgba(236, 210, 171, 0.15);
+}
+.fi-time {
+  margin-top: calc(var(--d) * 0.6);
+  font-size: calc(var(--d) * 0.9);
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  padding-left: 0.34em;
+  color: var(--fi-gold);
+}
+
+.fi-cordial {
+  margin: 0;
+  font-size: calc(var(--d) * 1.5);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--fi-champagne);
+}
+
+/* RSVP: a double-ruled card button with diamond terminals and a slow pulse. */
+.fi-rsvp {
+  position: relative;
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 1.15em 2.5em;
+  border: 1px solid rgba(201, 156, 114, 0.85);
+  background-color: rgba(8, 7, 7, 0.55);
+  background-image: linear-gradient(105deg, transparent 35%, rgba(255, 236, 210, 0.35) 50%, transparent 65%);
+  background-size: 250% 100%;
+  background-position: 130% 0;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 3px rgba(8, 7, 7, 0.9), inset 0 0 0 4px rgba(201, 156, 114, 0.35);
+  color: var(--fi-champagne);
+  font-size: max(calc(var(--d) * 0.8), 12px);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  text-transform: uppercase;
+  transition: background-color 450ms, color 450ms, background-position 900ms ease, box-shadow 450ms;
+  animation: fi-pulse 3.6s ease-in-out 4s infinite;
+}
+.fi-rsvp-label { padding-left: 0.3em; }
+.fi-rsvp::before,
+.fi-rsvp::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--fi-gold);
+  background: var(--fi-ink);
+  translate: 0 -50%;
+  rotate: 45deg;
+  transition: background-color 450ms;
+}
+.fi-rsvp::before { left: -4px; }
+.fi-rsvp::after { right: -4px; }
+.fi-rsvp:hover {
+  background-color: var(--fi-gold);
+  background-position: -30% 0;
+  color: var(--fi-ink);
+  box-shadow: inset 0 0 0 3px var(--fi-gold), inset 0 0 0 4px rgba(8, 7, 7, 0.45);
+}
+.fi-rsvp:hover::before,
+.fi-rsvp:hover::after { background: var(--fi-gold); }
+
+.fi-song {
+  max-width: 21em;
+  margin: 0;
+  font-size: max(calc(var(--d) * 0.9), 13px);
+  font-weight: 500;
+  line-height: 1.5;
+  text-wrap: balance;
+  color: var(--fi-gold-soft);
+}
+.fi-song cite {
+  font-style: italic;
+  color: var(--fi-gold);
+}
+
+/* Seal sits on a gold rule, stamped down last. */
+.fi-seal {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  animation: fi-fade 1s ease-out 2.6s both;
+}
+.fi-seal::before {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  top: 40.7%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fi-gold-dim) 30%, var(--fi-gold-dim) 70%, transparent);
+}
+.fi-seal img {
+  position: relative;
+  width: calc(var(--d) * 5.6);
+  height: auto;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.6));
+  animation: fi-stamp 0.9s cubic-bezier(0.3, 1.4, 0.5, 1) 2.7s both;
+}
+
+/* ---------- Screen-edge frame ----------
+   Pieces cut from the original art. Offsets are in source pixels (x --u),
+   measured from the centers of the art's outer border lines: left 36,
+   top 24.5, right 1087.5, bottom 1371.5. Crop sizes are listed beside each. */
+
+.fi-frame {
+  position: absolute;
+  inset: calc(var(--inset) + 24.5 * var(--u));
+  pointer-events: none;
+  animation: fi-fade 1.6s ease-out both;
+}
+.fi-frame > div {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Corners, 110x120 */
+.fi-frame-corner-tl { left: calc(-14 * var(--u)); top: calc(-14.5 * var(--u)); background-image: url("/funeral/frame/corner-tl.png"); }
+.fi-frame-corner-tr { right: calc(-12.5 * var(--u)); top: calc(-14.5 * var(--u)); background-image: url("/funeral/frame/corner-tr.png"); }
+.fi-frame-corner-bl { left: calc(-14 * var(--u)); bottom: calc(-20.5 * var(--u)); background-image: url("/funeral/frame/corner-bl.png"); }
+.fi-frame-corner-br { right: calc(-12.5 * var(--u)); bottom: calc(-20.5 * var(--u)); background-image: url("/funeral/frame/corner-br.png"); }
+.fi-frame [class*="corner"] { width: calc(110 * var(--u)); height: calc(120 * var(--u)); }
+
+/* Horizontal strips, 300x27 tile, split around the midpoint ornament */
+.fi-frame [class*="strip-top"],
+.fi-frame [class*="strip-bottom"] {
+  height: calc(27 * var(--u));
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+.fi-frame [class*="strip-top"] { top: calc(-7.5 * var(--u)); background-image: url("/funeral/frame/strip-top.png"); }
+.fi-frame [class*="strip-bottom"] { bottom: calc(-8.5 * var(--u)); background-image: url("/funeral/frame/strip-bottom.png"); }
+.fi-frame-strip-top-l,
+.fi-frame-strip-bottom-l { left: calc(96 * var(--u)); right: calc(50% + 33 * var(--u)); }
+.fi-frame-strip-top-r,
+.fi-frame-strip-bottom-r { left: calc(50% + 33 * var(--u)); right: calc(97.5 * var(--u)); background-position: right top; }
+
+/* Vertical strips, 27x300 tile, split around the midpoint ornament */
+.fi-frame [class*="strip-left"],
+.fi-frame [class*="strip-right"] {
+  width: calc(27 * var(--u));
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+}
+.fi-frame [class*="strip-left"] { left: calc(-7 * var(--u)); background-image: url("/funeral/frame/strip-left.png"); }
+.fi-frame [class*="strip-right"] { right: calc(-7.5 * var(--u)); background-image: url("/funeral/frame/strip-right.png"); }
+.fi-frame-strip-left-t,
+.fi-frame-strip-right-t { top: calc(105.5 * var(--u)); bottom: calc(50% + 30 * var(--u)); }
+.fi-frame-strip-left-b,
+.fi-frame-strip-right-b { top: calc(50% + 30 * var(--u)); bottom: calc(99.5 * var(--u)); background-position: left bottom; }
+
+/* Midpoint ornaments: top/bottom 66x46 and 66x52, sides 48x60 */
+.fi-frame-mid-top,
+.fi-frame-mid-bottom { left: calc(50% - 33 * var(--u)); width: calc(66 * var(--u)); }
+.fi-frame-mid-top { top: calc(-20.5 * var(--u)); height: calc(46 * var(--u)); background-image: url("/funeral/frame/mid-top.png"); }
+.fi-frame-mid-bottom { bottom: calc(-24.5 * var(--u)); height: calc(52 * var(--u)); background-image: url("/funeral/frame/mid-bottom.png"); }
+.fi-frame-mid-left,
+.fi-frame-mid-right { top: calc(50% - 30 * var(--u)); width: calc(48 * var(--u)); height: calc(60 * var(--u)); }
+.fi-frame-mid-left { left: calc(-22 * var(--u)); background-image: url("/funeral/frame/mid-left.png"); }
+.fi-frame-mid-right { right: calc(-20.5 * var(--u)); background-image: url("/funeral/frame/mid-right.png"); }
+
+/* ---------- Footer ---------- */
+
+.fi-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1.5rem 3rem;
+  font-family: var(--font-funeral), Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: rgba(201, 156, 114, 0.7);
+}
+.fi-footer-home {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fi-gold);
+}
+.fi-footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 1.1rem;
+}
+.fi-footer a,
+.fi-footer button { transition: color 200ms; }
+.fi-footer a:hover,
+.fi-footer button:hover { color: var(--fi-gold-hi); }
+
+/* ---------- Motion ---------- */
+
+@keyframes fi-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fi-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fi-settle {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fi-ink {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to { -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
+@keyframes fi-stamp {
+  from { opacity: 0; transform: scale(1.45) rotate(-8deg); }
+  60% { opacity: 1; transform: scale(0.95) rotate(1deg); }
+  to { opacity: 1; transform: none; }
+}
+/* Glow via filter, not box-shadow, so it never fights the hover styles. */
+@keyframes fi-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(201, 156, 114, 0)); }
+  50% { filter: drop-shadow(0 0 12px rgba(201, 156, 114, 0.35)); }
+}
+@keyframes fi-breathe {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+@keyframes fi-drift {
+  to { background-position: 0 -260px, 60px -250px; }
+}
+@keyframes fi-drift-2 {
+  to { background-position: 120px -300px, 20px -270px; }
+}

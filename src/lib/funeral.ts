@@ -18,3 +18,13 @@ export function isReleased(now: Date = new Date()): boolean {
 // the artwork arrives, add it to /public/funeral and set it here, e.g.
 // { src: "/funeral/your-wife-is-dead-cover.jpg", width: 3000, height: 3000 }.
 export const COVER_ART: { src: string; width: number; height: number } | null = null;
+
+// Approval gate. While true, /yourwifeisdead asks for a password (browser
+// prompt, any username), is marked noindex, and is left out of the sitemap.
+// Set to false and deploy to launch publicly.
+export const FUNERAL_GATED = true;
+
+// SHA-256 of the shared approval password (the password itself is not stored
+// in the repo). Generate a new one with: printf %s 'new-password' | shasum -a 256
+export const FUNERAL_PASSWORD_SHA256 =
+  "1a0e803407c65d687e8538af681e912d568c90f3c9b298bf1c63f1d2d5ef00ec";

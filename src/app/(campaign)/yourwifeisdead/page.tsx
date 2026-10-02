@@ -3,7 +3,7 @@ import { Cormorant_Garamond } from "next/font/google";
 import FuneralInvite from "@/components/funeral/FuneralInvite";
 import FuneralFooter from "@/components/funeral/FuneralFooter";
 import FuneralFrame from "@/components/funeral/FuneralFrame";
-import { isReleased } from "@/lib/funeral";
+import { FUNERAL_GATED, isReleased } from "@/lib/funeral";
 import "./funeral.css";
 
 // Re-render at most once a minute so the button flips from "Pre-Save to RSVP"
@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/yourwifeisdead" },
+  // Kept out of search while the page is behind the approval password.
+  robots: { index: !FUNERAL_GATED, follow: !FUNERAL_GATED },
   openGraph: {
     title,
     description,

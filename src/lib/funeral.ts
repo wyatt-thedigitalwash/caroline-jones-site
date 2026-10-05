@@ -14,11 +14,6 @@ export function isReleased(now: Date = new Date()): boolean {
   return now.getTime() >= RELEASE_AT.getTime();
 }
 
-// Cover art for the desktop lockup. Leave null to show the placeholder; when
-// the artwork arrives, add it to /public/funeral and set it here, e.g.
-// { src: "/funeral/your-wife-is-dead-cover.jpg", width: 3000, height: 3000 }.
-export const COVER_ART: { src: string; width: number; height: number } | null = null;
-
 // Approval gate. While true, /yourwifeisdead asks for a password (browser
 // prompt, any username), is marked noindex, and is left out of the sitemap.
 // Set to false and deploy to launch publicly.

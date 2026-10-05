@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SiteExtras from '@/components/consent/SiteExtras';
 
 export const metadata: Metadata = {
   title: 'Page Not Found | Caroline Jones',
@@ -26,6 +27,7 @@ export default function NotFound() {
         </div>
       </main>
       <Footer />
+      <SiteExtras hoistFonts={false} />
     </>
   );
 }

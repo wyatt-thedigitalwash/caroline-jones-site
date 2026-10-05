@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import CookieConsent from "@/components/consent/CookieConsent";
-import TermsGate from "@/components/consent/TermsGate";
 import AnchorScroll from "@/components/shared/AnchorScroll";
 import "./globals.css";
 
@@ -83,7 +81,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <head>
-        <link rel="stylesheet" href="https://use.typekit.net/acl6kai.css" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -101,15 +98,9 @@ export default function RootLayout({
           Skip to main content
         </a>
         <AnchorScroll />
-        {/* Header, <main> and Footer live in each route group's layout, so
-            campaign landing pages can opt out of the main site chrome. */}
+        {/* Site chrome, Adobe Fonts and the consent prompts live in each route
+            group's layout, so campaign pages can opt out of all of them. */}
         {children}
-        {/* Cookie consent banner. Shows once per new visitor, persisted in
-            localStorage; injects nothing before consent is granted. */}
-        <CookieConsent />
-        {/* Arbitration / class-action notice, shown once right after the cookie
-            decision so it is never buried only in the footer. */}
-        <TermsGate />
       </body>
     </html>
   );

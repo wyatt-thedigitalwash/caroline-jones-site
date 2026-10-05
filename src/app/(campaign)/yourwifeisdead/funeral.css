@@ -15,22 +15,8 @@
 
 /* ---------- Page-wide overrides (only while this page is mounted) ---------- */
 
-body:has(.fi-page) {
-  background: var(--fi-ink);
-  --background-alt: #15110e;
-  --text-header: var(--fi-gold-hi);
-  --text-body: var(--fi-gold);
-  --text-accent: var(--fi-gold);
-}
-body:has(.fi-page) .cc-btn { border-color: var(--fi-gold); }
-body:has(.fi-page) .cc-btn-primary { background: var(--fi-gold); color: var(--fi-ink); }
-body:has(.fi-page) .cc-btn-primary:hover,
-body:has(.fi-page) .cc-btn-ghost { background: transparent; color: var(--fi-gold); }
-body:has(.fi-page) .cc-btn-ghost:hover { background: var(--fi-gold); color: var(--fi-ink); }
+body:has(.fi-page) { background: var(--fi-ink); }
 body:has(.fi-page) *:focus-visible { outline-color: var(--fi-gold-hi); }
-/* The footer carries a Cookie Choices link, so the floating pill would only
-   sit on top of the frame here. */
-body:has(.fi-page) [data-cookie-pill] { display: none; }
 
 /* ---------- Page + stage ---------- */
 
@@ -292,57 +278,28 @@ body:has(.fi-page) [data-cookie-pill] { display: none; }
   height: auto;
 }
 
-/* ---------- Cover art (desktop) ----------
-   Square under "Her.", between the lower vines. */
+/* ---------- Memorial portrait (desktop) ----------
+   Oval cameo under "Her.", between the lower vines. */
 
-.fi-cover { display: none; }
+.fi-portrait { display: none; }
 
 @media (min-width: 1024px) {
-  .fi-cover {
+  .fi-portrait {
     position: absolute;
     left: 50%;
-    top: calc(70.5cqw + var(--ty) * 1.5);
-    display: flex;
-    width: 22cqw;
-    aspect-ratio: 1;
+    top: calc(66.5cqw + var(--ty) * 1.5);
+    display: block;
+    width: 21cqw;
     margin: 0;
-    align-items: center;
-    justify-content: center;
     translate: -50% 0;
-    border: 1px solid rgba(201, 156, 114, 0.6);
-    background: rgba(8, 7, 7, 0.75);
-    box-shadow: inset 0 0 0 4px rgba(8, 7, 7, 0.9), inset 0 0 0 5px rgba(201, 156, 114, 0.22),
-      0 14px 36px rgba(0, 0, 0, 0.65);
     animation: fi-rise 1.6s ease-out 1.6s both;
   }
-  .fi-cover img {
+  .fi-portrait img {
     display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .fi-cover-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.9cqw;
-    padding: 2cqw;
-    text-align: center;
-  }
-  .fi-cover-placeholder cite {
-    font-size: 2.3cqw;
-    font-style: italic;
-    font-weight: 500;
-    line-height: 1.15;
-    color: var(--fi-champagne);
-  }
-  .fi-cover-placeholder span {
-    font-size: 1.05cqw;
-    font-weight: 600;
-    letter-spacing: 0.3em;
-    padding-left: 0.3em;
-    text-transform: uppercase;
-    color: var(--fi-gold-soft);
+    height: auto;
+    /* Warm the cream rim toward the gold palette, and lift it off the paper. */
+    filter: sepia(0.3) brightness(0.92) drop-shadow(0 14px 28px rgba(0, 0, 0, 0.7));
   }
 }
 

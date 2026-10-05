@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { COVER_ART, PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
+import { PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
 
 // The invitation, opened. Two "pages": the lockup (garland arch framing "The
 // Funeral of Her.") and the details (date, the invitation line, RSVP, seal).
@@ -33,22 +33,15 @@ export default function FuneralInvite({ released }: { released: boolean }) {
           </span>
         </h1>
 
-        {/* Desktop only: the cover art, or a placeholder until it arrives. */}
-        <figure className="fi-cover">
-          {COVER_ART ? (
-            <Image
-              src={COVER_ART.src}
-              alt="Your Wife Is Dead cover art"
-              width={COVER_ART.width}
-              height={COVER_ART.height}
-              sizes="220px"
-            />
-          ) : (
-            <figcaption className="fi-cover-placeholder">
-              <cite>Your Wife Is Dead</cite>
-              <span>Artwork to come</span>
-            </figcaption>
-          )}
+        {/* Desktop only: memorial cameo portrait under "Her." */}
+        <figure className="fi-portrait">
+          <Image
+            src="/funeral/portrait-oval.png"
+            alt="Memorial portrait of Caroline Jones in an oval cameo frame"
+            width={840}
+            height={1142}
+            sizes="220px"
+          />
         </figure>
       </section>
 

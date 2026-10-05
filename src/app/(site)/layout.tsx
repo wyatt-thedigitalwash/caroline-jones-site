@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SiteExtras from "@/components/consent/SiteExtras";
 
 // Main site chrome. Campaign pages under (campaign) skip this layout.
 export default function SiteLayout({
@@ -12,6 +13,7 @@ export default function SiteLayout({
       <Header />
       <main id="main-content" className="flex-1">{children}</main>
       <Footer />
+      <SiteExtras />
     </>
   );
 }

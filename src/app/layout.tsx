@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import AnchorScroll from "@/components/shared/AnchorScroll";
+import { splashScript } from "@/lib/splash";
 import "./globals.css";
 
 const siteUrl = "https://carolinejones.com";
@@ -79,8 +80,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    // suppressHydrationWarning: the splash script below mutates the class list
+    // before React hydrates, so server and client markup intentionally differ.
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        {/* Must run before first paint. Harmless on pages without the splash
+            (campaign pages): it only sets classes on <html>. */}
+        <script dangerouslySetInnerHTML={{ __html: splashScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

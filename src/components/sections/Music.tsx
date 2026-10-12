@@ -1,6 +1,15 @@
 import Image from "next/image";
+import { PRESAVE_URL, isReleased } from "@/lib/funeral";
 
 const albums = [
+  {
+    title: "Your Wife Is Dead",
+    cover: "/covers/CarolineJones_YourWifeIsDead_Cover.jpg",
+    alt: "Caroline Jones -- Your Wife Is Dead single cover",
+    href: PRESAVE_URL,
+    // Pre-save until release (midnight ET, 10/30), then a normal listen link.
+    upcoming: true,
+  },
   {
     title: "Good Omen",
     cover: "/covers/CarolineJones_GoodOmen_CoverArt.jpg",
@@ -16,6 +25,7 @@ const albums = [
 ];
 
 export default function Music() {
+  const released = isReleased();
   return (
     <section
       id="music"
@@ -28,7 +38,7 @@ export default function Music() {
         Music
       </p>
 
-      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-16 md:grid-cols-2 md:gap-20">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-16 md:grid-cols-3 md:gap-12 lg:gap-16">
         {albums.map((album) => (
           <div key={album.title} className="flex flex-col items-center">
             <Image
@@ -36,7 +46,7 @@ export default function Music() {
               alt={album.alt}
               width={600}
               height={600}
-              sizes="(min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 768px) 33vw, 100vw"
               className="aspect-square w-full object-cover"
             />
 
@@ -46,7 +56,7 @@ export default function Music() {
               rel="noopener noreferrer"
               className="mt-6 font-[family-name:var(--font-body)] text-sm uppercase tracking-[0.2em] text-[#5D3635] underline underline-offset-4 decoration-[0.5px] hover:opacity-70"
             >
-              Listen Now
+              {"upcoming" in album && !released ? "Pre-Save" : "Listen Now"}
               <span className="sr-only"> - {album.title} (opens in new tab)</span>
             </a>
           </div>

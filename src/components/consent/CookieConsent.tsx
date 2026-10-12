@@ -12,6 +12,7 @@ import {
 } from "./consent";
 import { applyConsent } from "./injectScripts";
 import { useSplashEntered } from "./useSplashEntered";
+import { useTermsAcknowledged } from "./useTermsAcknowledged";
 
 const NON_NECESSARY: Category[] = ["analytics", "advertising", "functional", "social"];
 
@@ -22,6 +23,7 @@ function now() {
 
 export default function CookieConsent() {
   const splashEntered = useSplashEntered();
+  const termsAcknowledged = useTermsAcknowledged();
   const [decided, setDecided] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -107,9 +109,9 @@ export default function CookieConsent() {
   return (
     <>
       {/* ── Consent banner (first visit) ── */}
-      {/* Held back until the visitor has entered past the splash, so the two
-          never stack. */}
-      {showBanner && !showModal && splashEntered && (
+      {/* Held back until the visitor has entered past the splash and
+          dismissed the Terms notice, so the prompts never stack. */}
+      {showBanner && !showModal && splashEntered && termsAcknowledged && (
         <div className="fixed inset-x-0 bottom-0 z-[60] p-4 sm:left-auto sm:right-4 sm:max-w-[420px]">
           <div className="border border-text-body/40 bg-background-alt p-4 shadow-2xl sm:p-6">
             <p className="font-display text-[15px] text-text-accent sm:text-[18px]">We value your privacy</p>

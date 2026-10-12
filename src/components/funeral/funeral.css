@@ -13,10 +13,11 @@
   --fi-gold-soft: #b4936e;
 }
 
-/* ---------- Page-wide overrides (only while this page is mounted) ---------- */
+/* ---------- Page-wide overrides (only while this page is mounted) ----------
+   The main-site splash reuses .fi-page but must not repaint the site under it. */
 
-body:has(.fi-page) { background: var(--fi-ink); }
-body:has(.fi-page) *:focus-visible { outline-color: var(--fi-gold-hi); }
+body:has(.fi-page:not(#splash-overlay)) { background: var(--fi-ink); }
+.fi-page *:focus-visible { outline-color: var(--fi-gold-hi); }
 
 /* ---------- Page + stage ---------- */
 

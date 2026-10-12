@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
 
@@ -6,7 +7,18 @@ import { PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
 // Phones stack them; from 1024px they sit side by side with a fold between.
 // Lockup lettering is sized in cqw of the arch so it always sits inside the
 // vines; everything else is normal flow.
-export default function FuneralInvite({ released }: { released: boolean }) {
+//
+// The main-site splash reuses this with its own `cta` (Pre-Save, Enter Site
+// and the Terms notice) and an h2, since the homepage under it has the h1.
+export default function FuneralInvite({
+  released,
+  cta,
+  titleAs: Title = "h1",
+}: {
+  released: boolean;
+  cta?: ReactNode;
+  titleAs?: "h1" | "h2";
+}) {
   return (
     <article className="fi-invite" aria-labelledby="fi-title">
       <section className="fi-lockup" aria-label="Invitation">
@@ -19,7 +31,7 @@ export default function FuneralInvite({ released }: { released: boolean }) {
           className="fi-garland"
           preload
         />
-        <h1 id="fi-title" className="fi-title">
+        <Title id="fi-title" className="fi-title">
           <span className="fi-caps fi-funeral">The Funeral</span>
           <span className="fi-caps fi-of">of</span>
           <span className="fi-her">
@@ -31,7 +43,7 @@ export default function FuneralInvite({ released }: { released: boolean }) {
               sizes="(min-width: 1024px) 21vw, 44vw"
             />
           </span>
-        </h1>
+        </Title>
 
         {/* Desktop only: memorial cameo portrait under "Her." */}
         <figure className="fi-portrait">
@@ -72,15 +84,19 @@ export default function FuneralInvite({ released }: { released: boolean }) {
         </div>
 
         <div className="fi-cta">
-          <p className="fi-cordial">You are cordially invited.</p>
-          <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
-            <span className="fi-rsvp-label">{released ? "Listen Now" : "Pre-Save to RSVP"}</span>
-            <span className="sr-only"> (opens in new tab)</span>
-          </a>
-          <p className="fi-song">
-            {released ? "Listen to" : "Pre-save"} <cite>Your Wife Is Dead</cite>, the new song
-            from Caroline Jones.
-          </p>
+          {cta ?? (
+            <>
+              <p className="fi-cordial">You are cordially invited.</p>
+              <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
+                <span className="fi-rsvp-label">{released ? "Listen Now" : "Pre-Save to RSVP"}</span>
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+              <p className="fi-song">
+                {released ? "Listen to" : "Pre-save"} <cite>Your Wife Is Dead</cite>, the new song
+                from Caroline Jones.
+              </p>
+            </>
+          )}
         </div>
 
         <div className="fi-seal">

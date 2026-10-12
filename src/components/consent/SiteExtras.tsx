@@ -10,16 +10,11 @@ import TermsGate from "@/components/consent/TermsGate";
 // An @import inside <style> isn't hinted and only loads when the 404 renders.
 export default function SiteExtras({ hoistFonts = true }: { hoistFonts?: boolean }) {
   const fontsHref = "https://use.typekit.net/acl6kai.css";
-  // "Your Wife Is Dead" kit: Cinzel Decorative + Avenir Next (splash).
-  const releaseFontsHref = "https://use.typekit.net/bvx0zeu.css";
   return (
     <>
       {hoistFonts ? (
         // React hoists this into <head>.
-        <>
-          <link rel="stylesheet" href={fontsHref} precedence="default" />
-          <link rel="stylesheet" href={releaseFontsHref} precedence="default" />
-        </>
+        <link rel="stylesheet" href={fontsHref} precedence="default" />
       ) : (
         <style>{`@import url("${fontsHref}");`}</style>
       )}

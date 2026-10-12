@@ -1,23 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond } from "next/font/google";
 import FuneralInvite from "@/components/funeral/FuneralInvite";
 import FuneralFooter from "@/components/funeral/FuneralFooter";
 import FuneralFrame from "@/components/funeral/FuneralFrame";
 import { FUNERAL_GATED, isReleased } from "@/lib/funeral";
-import "./funeral.css";
+import { cormorant } from "@/lib/funeralFont";
+import "@/components/funeral/funeral.css";
 
 // Re-render at most once a minute so the button flips from "Pre-Save to RSVP"
 // to "Listen Now" at release without a redeploy.
 export const revalidate = 60;
-
-// Closest web match to the invite's spaced roman caps.
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  style: ["normal", "italic"],
-  variable: "--font-funeral",
-  display: "swap",
-});
 
 const title = "The Funeral of Her | Caroline Jones";
 const description =

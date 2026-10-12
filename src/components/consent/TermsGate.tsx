@@ -1,73 +1,29 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { readConsent } from "./consent";
 import { useSplashEntered, markSplashEntered } from "./useSplashEntered";
+import { useTermsAcknowledged, acknowledgeTerms } from "./useTermsAcknowledged";
 
 // Puts the arbitration / class-action-waiver notice in front of the visitor
-// instead of burying it in a footer link. Acknowledgement persists separately
-// from cookie consent. Two distinct jobs:
+// instead of burying it in a footer link. Two cases:
 //
 //   Case A -- deep-linked to /legal without having entered. The splash is
 //     hidden on that route, so there is no "Enter Site" button anywhere on the
-//     page. This notice becomes the way in, and stays available regardless of
-//     any past acknowledgement so the visitor can never be stranded.
-//   Case B -- the one-time backup notice after a cookie decision, shown only
-//     once the visitor has actually entered so it never stacks on the splash.
-const STORAGE_KEY = "cj-terms-gate";
-
-function readAcknowledged(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return !!window.localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return false;
-  }
-}
-
-function writeAcknowledged(): void {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, new Date().toISOString());
-  } catch {
-    /* storage unavailable -- notice will simply reappear next visit */
-  }
-}
-
+//     page. This notice becomes the way in, so the visitor is never stranded.
+//   Case B -- the visitor just entered past the splash. Shown every session
+//     until they click Got It; the cookie banner waits until then.
 export default function TermsGate() {
   const pathname = usePathname();
   const router = useRouter();
   const entered = useSplashEntered();
-  const [show, setShow] = useState(false);
+  const acknowledged = useTermsAcknowledged();
 
   const onExempt = pathname.startsWith("/legal");
-
-  const maybeShow = useCallback(() => {
-    // Case A: the escape hatch. Always available, even if they acknowledged on
-    // a previous visit, because it is their only way into the site from here.
-    if (!entered && onExempt) {
-      setShow(true);
-      return;
-    }
-    // Case B: shown once ever, after a cookie decision and only once entered,
-    // so the prompts never stack on a first-time visitor.
-    if (readAcknowledged()) {
-      setShow(false);
-      return;
-    }
-    setShow(entered && !!readConsent());
-  }, [entered, onExempt]);
-
-  useEffect(() => {
-    maybeShow();
-    window.addEventListener("cookie-consent-decided", maybeShow);
-    return () => window.removeEventListener("cookie-consent-decided", maybeShow);
-  }, [maybeShow]);
+  const show = entered ? !acknowledged : onExempt;
 
   const dismiss = () => {
-    writeAcknowledged();
-    setShow(false);
+    acknowledgeTerms();
     // Case A: treat this click as the entry action they never got to make, and
     // send them to the site rather than leaving them sitting on a legal page.
     if (!entered && onExempt) {

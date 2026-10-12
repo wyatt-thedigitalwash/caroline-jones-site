@@ -143,19 +143,15 @@ section[data-bg="light"] + section[data-bg="light"] {
 
 /* ─── Splash: "Your Wife Is Dead" ───
    Full-screen overlay on the main site (never on /legal, never on campaign
-   pages). Fonts per the label spec, from the bvx0zeu Adobe kit. Phones follow
-   the vertical graphic: release line and dark title in the sky up top, buttons
-   at the bottom. From md up, the horizontal graphic: light title over the
-   photo, then the release line and buttons beneath. */
+   pages). It is the /yourwifeisdead invitation (styles in
+   components/funeral/funeral.css); only the overlay itself and the
+   splash-only button pair live here. */
 #splash-overlay {
-  --splash-cream: #ede6dc;
-  --splash-ink: #1d1a17;
   position: fixed;
   inset: 0;
   z-index: 200;
-  overflow: hidden;
-  background: #2a241e;
-  color: var(--splash-cream);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   opacity: 1;
   transition: opacity 800ms ease;
 }
@@ -173,149 +169,19 @@ html:not(.splash-entered):not(.splash-exempt) body:has(#splash-overlay) {
   overflow: hidden;
 }
 
-.splash-bg {
-  object-fit: cover;
-  object-position: 50% 50%;
-}
-/* Legibility for the buttons at the bottom; the sky up top stays clean. */
-.splash-shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(16, 13, 10, 0.82) 0%, rgba(16, 13, 10, 0.45) 26%, transparent 50%);
-}
-
-.splash-content {
-  position: relative;
+/* Pre-Save and Enter Site, side by side where they fit. */
+.fi-splash-actions {
   display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  padding: max(9svh, 3.5rem) 1.25rem max(2rem, env(safe-area-inset-bottom));
-  text-align: center;
-  overflow-y: auto;
-}
-
-.splash-eyebrow {
-  font-family: "avenir-next-lt-pro", "Avenir Next", system-ui, sans-serif;
-  font-weight: 400;
-  font-size: clamp(0.95rem, 4.3vw, 1.2rem);
-  color: rgba(237, 230, 220, 0.82);
-}
-
-.splash-lockup {
-  margin-top: 4svh;
-  display: inline-flex;
-  flex-direction: column;
-}
-.splash-title {
-  margin: 0;
-  font-family: "cinzel-decorative", "Cinzel Decorative", Georgia, serif;
-  font-weight: 400;
-  /* ~86% of the screen width in Cinzel, as in the label's vertical graphic.
-     Allowed to wrap so the wider fallback font can't overflow before the
-     Adobe kit loads. */
-  font-size: min(8.4vw, 6svh);
-  line-height: 1.05;
-  letter-spacing: 0.01em;
-  text-wrap: balance;
-  color: var(--splash-ink);
-}
-.splash-artist {
-  align-self: flex-end;
-  margin-top: 0.35em;
-  font-family: "cinzel-decorative", "Cinzel Decorative", Georgia, serif;
-  font-weight: 400;
-  font-size: min(3.6vw, 2.2svh);
-  color: var(--splash-ink);
-}
-
-.splash-actions {
-  display: flex;
-  width: 100%;
-  max-width: 26rem;
-  margin-top: auto;
-  gap: 0.75rem;
-}
-.splash-btn {
-  display: inline-flex;
-  min-height: 48px;
-  flex: 1;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  padding: 0.9rem 1.5rem;
-  border: 1px solid var(--splash-cream);
-  font-family: "avenir-next-lt-pro", "Avenir Next", system-ui, sans-serif;
-  font-size: 0.8rem;
-  font-weight: 400;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  gap: 0.9rem 1.4rem;
+}
+.fi-splash-actions .fi-rsvp {
+  min-width: 11.5em;
   cursor: pointer;
-  transition: background-color 300ms, color 300ms, opacity 300ms;
+  font-family: inherit;
 }
-.splash-btn-solid {
-  background: var(--splash-cream);
-  color: var(--splash-ink);
+@media (max-width: 767px) {
+  .fi-splash-actions { gap: 0.8rem 1.1rem; }
+  .fi-splash-actions .fi-rsvp { min-width: 0; padding-inline: 1.7em; }
 }
-.splash-btn-solid:hover { opacity: 0.85; }
-.splash-btn-outline {
-  background: rgba(16, 13, 10, 0.25);
-  color: var(--splash-cream);
-}
-.splash-btn-outline:hover {
-  background: var(--splash-cream);
-  color: var(--splash-ink);
-}
-
-.splash-legal {
-  max-width: 24rem;
-  margin-top: 1.1rem;
-  font-family: "avenir-next-lt-pro", "Avenir Next", system-ui, sans-serif;
-  font-size: 11px;
-  line-height: 1.6;
-  color: rgba(237, 230, 220, 0.8);
-}
-.splash-legal a {
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.splash-legal a:hover { opacity: 0.7; }
-
-#splash-overlay *:focus-visible { outline-color: var(--splash-cream); }
-
-@media (min-width: 768px) {
-  .splash-bg { object-position: 50% 42%; }
-  .splash-shade {
-    background:
-      linear-gradient(to top, rgba(16, 13, 10, 0.78) 0%, rgba(16, 13, 10, 0.35) 30%, transparent 55%),
-      rgba(16, 13, 10, 0.12);
-  }
-  .splash-content {
-    padding: max(5svh, 2rem) 2rem max(2rem, 4svh);
-  }
-  /* Title up in the sky above her head; release line, buttons and legal
-     pinned to the bottom. */
-  .splash-lockup { order: 1; margin-top: 0; }
-  .splash-eyebrow { order: 2; margin-top: auto; font-size: clamp(1rem, 1.6vw, 1.5rem); }
-  .splash-actions { order: 3; margin-top: max(3svh, 1.25rem); width: auto; max-width: none; }
-  .splash-legal { order: 4; }
-  .splash-title {
-    font-size: min(5vw, 8svh);
-    color: var(--splash-cream);
-    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
-  }
-  .splash-artist {
-    font-size: min(2vw, 3.2svh);
-    color: var(--splash-cream);
-    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
-  }
-  .splash-btn { flex: none; min-width: 13rem; }
-}
-
-/* Staggered fade-up once the photo is in (or the timeout passes). */
-@keyframes splash-rise {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
-}
-.splash-rise { opacity: 0; }
-.splash-ready .splash-rise { animation: splash-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both; }

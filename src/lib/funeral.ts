@@ -17,7 +17,7 @@ export function isReleased(now: Date = new Date()): boolean {
 // Approval gate. While true, /yourwifeisdead asks for a password (browser
 // prompt, any username), is marked noindex, and is left out of the sitemap.
 // Set to false and deploy to launch publicly.
-export const FUNERAL_GATED = true;
+export const FUNERAL_GATED = false;
 
 // SHA-256 of the shared approval password (the password itself is not stored
 // in the repo). Generate a new one with: printf %s 'new-password' | shasum -a 256

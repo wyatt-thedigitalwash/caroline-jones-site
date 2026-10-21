@@ -185,3 +185,94 @@ html:not(.splash-entered):not(.splash-exempt) body:has(#splash-overlay) {
   .fi-splash-actions { gap: 0.8rem 1.1rem; }
   .fi-splash-actions .fi-rsvp { min-width: 0; padding-inline: 1.7em; }
 }
+
+/* ─── Hero: "Your Wife Is Dead" ───
+   Label spec: the title is the label's lockup art; Avenir Next Regular for
+   the rest (Adobe kit bvx0zeu, loaded in SiteExtras). Copy is tan
+   #D8CAC2 over the photo, charcoal #272727 where it sits in the sky. */
+#hero {
+  --ywid-tan: #d8cac2;
+  --ywid-charcoal: #272727;
+}
+.ywid-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(20, 18, 16, 0.55), transparent 35%);
+}
+.ywid-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Phones: the button sits a little above the Terms notice that appears on
+     entry, and stays put. The notice is taller on narrower phones, hence the
+     steps below. */
+  padding: max(16svh, 7rem) 1.25rem 13rem;
+  text-align: center;
+}
+@media (min-width: 381px) {
+  .ywid-content { padding-bottom: 12.5rem; }
+}
+@media (min-width: 431px) {
+  .ywid-content { padding-bottom: 11.5rem; }
+}
+.ywid-eyebrow {
+  font-family: "avenir-next-lt-pro", "Avenir Next", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: clamp(0.95rem, 4.3vw, 1.2rem);
+  color: var(--ywid-tan);
+}
+.ywid-lockup {
+  width: min(90vw, 40rem);
+  margin: 3svh 0 0;
+}
+/* Lockup art as a mask so it takes the copy color for each breakpoint. */
+.ywid-lockup-art {
+  display: block;
+  aspect-ratio: 6864 / 954;
+  background-color: var(--ywid-charcoal);
+  -webkit-mask: url("/hero/ywid-lockup.svg") center / contain no-repeat;
+  mask: url("/hero/ywid-lockup.svg") center / contain no-repeat;
+}
+.ywid-btn {
+  display: inline-flex;
+  min-height: 48px;
+  min-width: 13rem;
+  margin-top: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 2.5rem;
+  border: 1px solid var(--ywid-tan);
+  font-family: "avenir-next-lt-pro", "Avenir Next", system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ywid-tan);
+  transition: background-color 300ms, color 300ms;
+}
+.ywid-btn:hover {
+  background: var(--ywid-tan);
+  color: var(--ywid-charcoal);
+}
+
+@media (min-width: 768px) {
+  .ywid-shade {
+    background:
+      linear-gradient(to top, rgba(20, 18, 16, 0.6), transparent 40%),
+      rgba(20, 18, 16, 0.18);
+  }
+  /* Title across her at mid-height; release line and button at the bottom. */
+  .ywid-content {
+    justify-content: flex-end;
+    padding: 0 2rem max(7svh, 2.5rem);
+  }
+  .ywid-lockup { order: 1; width: min(66vw, 116svh); margin: 0 0 auto; padding-top: 46svh; }
+  .ywid-eyebrow { order: 2; font-size: clamp(1rem, 1.6vw, 1.5rem); }
+  .ywid-btn { order: 3; margin-top: max(3svh, 1.25rem); }
+  .ywid-lockup-art {
+    background-color: var(--ywid-tan);
+    filter: drop-shadow(0 2px 18px rgba(0, 0, 0, 0.35));
+  }
+}

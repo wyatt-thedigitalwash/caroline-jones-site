@@ -1,40 +1,70 @@
-import Image from "next/image";
+import { getImageProps } from "next/image";
+import { PRESAVE_URL, isReleased } from "@/lib/funeral";
+
+// "Your Wife Is Dead" key art, art-directed: the tall cut (with its dark band
+// for copy at the bottom) on phones, the wide cut from 768px up. Fonts and
+// colors follow the label spec (styles under "Hero" in globals.css).
+const alt =
+  "Caroline Jones in a black dress, hand on hip and holding a shovel, in a dusty field with two women behind her.";
 
 export default function Hero() {
+  const released = isReleased();
+
+  const {
+    props: { srcSet: desktop },
+  } = getImageProps({
+    alt,
+    sizes: "100vw",
+    width: 1920,
+    height: 1080,
+    src: "/backgrounds/CarolineJones_A_DIGITAL_YourWifeIsDead_NoCopy_General_1920x1080_2026.10.19_FNL.jpg",
+  });
+  const {
+    props: { srcSet: mobile, ...rest },
+  } = getImageProps({
+    alt,
+    sizes: "100vw",
+    width: 900,
+    height: 1600,
+    src: "/backgrounds/CarolineJones_A_DIGITAL_YourWifeIsDead_NoCopy_Mobile_900x1600_2026.10.19_FNL.jpg",
+  });
+
   return (
-    <section id="hero" aria-label="Hero" className="relative min-h-screen md:h-screen">
-      <Image
-        src="/backgrounds/CarolineJones_GoodOmen_DesktopBackground.jpg"
-        alt="Caroline Jones in fringe jacket against a sun-drenched sky"
-        fill
-        priority
-        className="object-cover object-center"
-        sizes="100vw"
-      />
+    <section id="hero" aria-label="Hero" className="relative min-h-screen overflow-hidden md:h-screen">
+      <picture>
+        <source media="(min-width: 768px)" srcSet={desktop} />
+        <source srcSet={mobile} />
+        <img
+          {...rest}
+          alt={alt}
+          loading="eager"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+      </picture>
 
-      <div className="absolute inset-0 bg-[#000000]/25" />
+      <div className="ywid-shade" aria-hidden="true" />
 
-      <div className="absolute inset-0 flex items-end justify-center px-6 pb-[12vh] md:pb-[120px]">
-        <div className="flex flex-col items-center text-center text-[#DDE2CD]">
+      {/* Per the label's graphics: phones put the release line and a dark
+          title in the sky with the button down in the dark band; desktop sets
+          a light title across her, with the release line and button beneath. */}
+      <div className="ywid-content">
+        <p className="ywid-eyebrow">
+          {released ? "Out Now | Listen Now" : "Available October 30 | Pre-Save Now"}
+        </p>
 
-          <p className="font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.3em] md:text-sm">
-            New Album Out Now
-          </p>
+        {/* The label's lockup art (traced to SVG from the final PNG), tinted
+            per breakpoint in CSS. The text is there for search and screen
+            readers. */}
+        <h1 className="ywid-lockup">
+          <span className="sr-only">Your Wife Is Dead, Caroline Jones</span>
+          <span className="ywid-lockup-art" aria-hidden="true" />
+        </h1>
 
-          <h1 className="mt-5 font-[family-name:var(--font-heading)] italic text-[clamp(48px,7vw,96px)] leading-[0.95]">
-            good omen
-          </h1>
-
-          <a
-            href="https://carolinejones.ffm.to/goodomenalbum"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-10 inline-block border border-[#DDE2CD] px-12 py-4 font-[family-name:var(--font-body)] text-xs uppercase tracking-[0.2em] text-[#DDE2CD] transition-colors hover:bg-[#DDE2CD]/10"
-          >
-            Listen Now
-            <span className="sr-only"> (opens in new tab)</span>
-          </a>
-        </div>
+        <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="ywid-btn">
+          {released ? "Listen Now" : "Pre-Save"}
+          <span className="sr-only"> (opens in new tab)</span>
+        </a>
       </div>
     </section>
   );

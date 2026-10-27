@@ -10,7 +10,7 @@ import {
   readConsent,
   writeConsent,
 } from "./consent";
-import { applyConsent } from "./injectScripts";
+import { applyConsent, clearAdvertisingCookies } from "./injectScripts";
 import { useSplashEntered } from "./useSplashEntered";
 import { useTermsAcknowledged } from "./useTermsAcknowledged";
 
@@ -81,7 +81,7 @@ export default function CookieConsent() {
   const commit = useCallback((consent: Consent) => {
     writeConsent(consent);
     // If the user turned OFF a category that was already injected this session,
-    // a reload is required to clear those scripts/cookies.
+    // a reload is required to unload those scripts (cookies are cleared first).
     const prev = applied.current;
     const removed = prev ? NON_NECESSARY.some((c) => prev[c] && !consent[c]) : false;
     setShowBanner(false);
@@ -89,6 +89,7 @@ export default function CookieConsent() {
     setDecided(true);
     window.dispatchEvent(new Event("cookie-consent-decided"));
     if (removed) {
+      if (prev?.advertising && !consent.advertising) clearAdvertisingCookies();
       window.location.reload();
       return;
     }

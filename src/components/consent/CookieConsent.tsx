@@ -110,9 +110,9 @@ export default function CookieConsent() {
   return (
     <>
       {/* ── Consent banner (first visit) ── */}
-      {/* Held back until the visitor has entered past the splash and
-          dismissed the Terms notice, so the prompts never stack. */}
-      {showBanner && !showModal && splashEntered && termsAcknowledged && (
+      {/* Held back until the visitor has entered past the splash. The Terms
+          notice (TermsGate) waits for this choice, so the prompts never stack. */}
+      {showBanner && !showModal && splashEntered && (
         <div className="fixed inset-x-0 bottom-0 z-[60] p-4 sm:left-auto sm:right-4 sm:max-w-[420px]">
           <div className="border border-text-body/40 bg-background-alt p-4 shadow-2xl sm:p-6">
             <p className="font-display text-[15px] text-text-accent sm:text-[18px]">We value your privacy</p>
@@ -246,7 +246,8 @@ export default function CookieConsent() {
       )}
 
       {/* ── Floating pill (after a choice is made) ── */}
-      {decided && !showModal && (
+      {/* Waits for the Terms notice to be dismissed: both sit bottom-right. */}
+      {decided && !showModal && termsAcknowledged && (
         <button
           type="button"
           onClick={openModal}

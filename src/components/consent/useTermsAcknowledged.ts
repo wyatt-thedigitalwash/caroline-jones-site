@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 
 // Whether the visitor has dismissed the Terms notice this session. Kept per
 // session, like the splash, so the notice comes back every time they enter.
-// The cookie banner waits on this so the two never stack.
+// It only appears after the cookie choice, so the two never stack.
 const STORAGE_KEY = "cj-terms-gate";
 const EVENT = "terms-acknowledged";
 
@@ -33,7 +33,7 @@ export function acknowledgeTerms(): void {
   try {
     sessionStorage.setItem(STORAGE_KEY, new Date().toISOString());
   } catch {
-    /* storage unavailable -- the event below still releases the cookie banner */
+    /* storage unavailable -- the event below still hides the notice */
   }
   window.dispatchEvent(new Event(EVENT));
 }

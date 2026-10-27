@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSplashEntered, markSplashEntered } from "./useSplashEntered";
 import { useTermsAcknowledged, acknowledgeTerms } from "./useTermsAcknowledged";
+import { useCookieDecided } from "./useCookieDecided";
 
 // Puts the arbitration / class-action-waiver notice in front of the visitor
 // instead of burying it in a footer link. Two cases:
@@ -11,16 +12,18 @@ import { useTermsAcknowledged, acknowledgeTerms } from "./useTermsAcknowledged";
 //   Case A -- deep-linked to /legal without having entered. The splash is
 //     hidden on that route, so there is no "Enter Site" button anywhere on the
 //     page. This notice becomes the way in, so the visitor is never stranded.
-//   Case B -- the visitor just entered past the splash. Shown every session
-//     until they click Got It; the cookie banner waits until then.
+//   Case B -- the visitor entered past the splash and has made their cookie
+//     choice. Shown every session until they click Got It, so the order is
+//     splash, cookie banner, then this notice.
 export default function TermsGate() {
   const pathname = usePathname();
   const router = useRouter();
   const entered = useSplashEntered();
   const acknowledged = useTermsAcknowledged();
+  const cookieDecided = useCookieDecided();
 
   const onExempt = pathname.startsWith("/legal");
-  const show = entered ? !acknowledged : onExempt;
+  const show = entered ? cookieDecided && !acknowledged : onExempt;
 
   const dismiss = () => {
     acknowledgeTerms();

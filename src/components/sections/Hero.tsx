@@ -1,5 +1,5 @@
 import { getImageProps } from "next/image";
-import { PRESAVE_URL, isReleased } from "@/lib/funeral";
+import { LISTEN_URL } from "@/lib/funeral";
 
 // "Your Wife Is Dead" key art, art-directed: the tall cut (with its dark band
 // for copy at the bottom) on phones, the wide cut from 768px up. Fonts and
@@ -8,8 +8,6 @@ const alt =
   "Caroline Jones in a black dress, hand on hip and holding a shovel, in a dusty field with two women behind her.";
 
 export default function Hero() {
-  const released = isReleased();
-
   const {
     props: { srcSet: desktop },
   } = getImageProps({
@@ -50,7 +48,7 @@ export default function Hero() {
           a light title across her, with the release line and button beneath. */}
       <div className="ywid-content">
         <p className="ywid-eyebrow">
-          {released ? "Out Now | Listen Now" : "Available October 30 | Pre-Save Now"}
+          Out Now | Listen Now
         </p>
 
         {/* The label's lockup art (traced to SVG from the final PNG), tinted
@@ -61,8 +59,8 @@ export default function Hero() {
           <span className="ywid-lockup-art" aria-hidden="true" />
         </h1>
 
-        <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="ywid-btn">
-          {released ? "Listen Now" : "Pre-Save"}
+        <a href={LISTEN_URL} target="_blank" rel="noopener noreferrer" className="ywid-btn">
+          Listen Now
           <span className="sr-only"> (opens in new tab)</span>
         </a>
       </div>

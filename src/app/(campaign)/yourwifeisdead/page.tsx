@@ -2,17 +2,13 @@ import type { Metadata, Viewport } from "next";
 import FuneralInvite from "@/components/funeral/FuneralInvite";
 import FuneralFooter from "@/components/funeral/FuneralFooter";
 import FuneralFrame from "@/components/funeral/FuneralFrame";
-import { FUNERAL_GATED, isReleased } from "@/lib/funeral";
+import { FUNERAL_GATED } from "@/lib/funeral";
 import { cormorant } from "@/lib/funeralFont";
 import "@/components/funeral/funeral.css";
 
-// Re-render at most once a minute so the button flips from "Pre-Save to RSVP"
-// to "Listen Now" at release without a redeploy.
-export const revalidate = 60;
-
 const title = "The Funeral of Her | Caroline Jones";
 const description =
-  "You are cordially invited to the funeral of Her. 10/30, midnight. Pre-save \"Your Wife Is Dead\" by Caroline Jones to RSVP.";
+  "You are cordially invited to the funeral of Her. \"Your Wife Is Dead,\" the new song from Caroline Jones, is out now. Listen now.";
 
 export const metadata: Metadata = {
   title,
@@ -51,7 +47,7 @@ export default function YourWifeIsDeadPage() {
           <div className="fi-vignette" />
         </div>
         <FuneralFrame />
-        <FuneralInvite released={isReleased()} />
+        <FuneralInvite />
       </main>
       <FuneralFooter />
     </div>

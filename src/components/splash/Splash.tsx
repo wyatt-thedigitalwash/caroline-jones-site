@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import FuneralFrame from "@/components/funeral/FuneralFrame";
 import FuneralInvite from "@/components/funeral/FuneralInvite";
-import { PRESAVE_URL } from "@/lib/funeral";
+import { LISTEN_URL } from "@/lib/funeral";
 import { cormorant } from "@/lib/funeralFont";
 import { SPLASH_KEY } from "@/lib/splash";
 import "@/components/funeral/funeral.css";
@@ -13,12 +13,9 @@ import "@/components/funeral/funeral.css";
 const EXIT_MS = 800;
 
 // "Your Wife Is Dead" splash: the /yourwifeisdead funeral invitation, with
-// Pre-Save and Enter Site buttons in place of the RSVP. The Terms notice
+// Listen Now and Enter Site buttons in place of the RSVP. The Terms notice
 // follows on entry (TermsGate).
-//
-// `released` comes from the server layout rather than the clock here, so the
-// prerendered copy and the hydrated copy always agree.
-export default function Splash({ released }: { released: boolean }) {
+export default function Splash() {
   const pathname = usePathname();
 
   // The pre-paint script handles the first paint; this handles client-side
@@ -50,8 +47,8 @@ export default function Splash({ released }: { released: boolean }) {
     <>
       <p className="fi-cordial">You are cordially invited.</p>
       <div className="fi-splash-actions">
-        <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
-          <span className="fi-rsvp-label">{released ? "Listen Now" : "Pre-Save"}</span>
+        <a href={LISTEN_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
+          <span className="fi-rsvp-label">Listen Now</span>
           <span className="sr-only"> (opens in new tab)</span>
         </a>
         <button type="button" onClick={enterSite} className="fi-rsvp">
@@ -59,8 +56,7 @@ export default function Splash({ released }: { released: boolean }) {
         </button>
       </div>
       <p className="fi-song">
-        {released ? "Listen to" : "Pre-save"} <cite>Your Wife Is Dead</cite>, the new song from
-        Caroline Jones.
+        Listen to <cite>Your Wife Is Dead</cite>, the new song from Caroline Jones, out now.
       </p>
     </>
   );
@@ -81,7 +77,7 @@ export default function Splash({ released }: { released: boolean }) {
           <div className="fi-vignette" />
         </div>
         <FuneralFrame />
-        <FuneralInvite released={released} cta={cta} titleAs="h2" />
+        <FuneralInvite cta={cta} titleAs="h2" />
       </div>
     </div>
   );

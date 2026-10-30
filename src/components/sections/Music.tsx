@@ -1,14 +1,12 @@
 import Image from "next/image";
-import { PRESAVE_URL, isReleased } from "@/lib/funeral";
+import { LISTEN_URL } from "@/lib/funeral";
 
 const albums = [
   {
     title: "Your Wife Is Dead",
     cover: "/covers/CarolineJones_YourWifeIsDead_Cover.jpg",
     alt: "Caroline Jones -- Your Wife Is Dead single cover",
-    href: PRESAVE_URL,
-    // Pre-save until release (midnight ET, 10/30), then a normal listen link.
-    upcoming: true,
+    href: LISTEN_URL,
   },
   {
     title: "Good Omen",
@@ -25,7 +23,6 @@ const albums = [
 ];
 
 export default function Music() {
-  const released = isReleased();
   return (
     <section
       id="music"
@@ -56,7 +53,7 @@ export default function Music() {
               rel="noopener noreferrer"
               className="mt-6 font-[family-name:var(--font-body)] text-sm uppercase tracking-[0.2em] text-[#5D3635] underline underline-offset-4 decoration-[0.5px] hover:opacity-70"
             >
-              {"upcoming" in album && !released ? "Pre-Save" : "Listen Now"}
+              Listen Now
               <span className="sr-only"> - {album.title} (opens in new tab)</span>
             </a>
           </div>

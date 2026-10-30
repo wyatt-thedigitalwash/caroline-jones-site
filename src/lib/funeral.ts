@@ -1,18 +1,12 @@
-// "Your Wife Is Dead" pre-save campaign (/yourwifeisdead, alias /rsvp).
+// "Your Wife Is Dead" campaign (/yourwifeisdead, alias /rsvp). The song is
+// out (released 10/30/2026, midnight ET); the invitation now points at the
+// listen link.
 
-export const PRESAVE_URL = "https://carolinejones.ffm.to/yourwifeisdead.JOA";
+export const LISTEN_URL = "https://carolinejones.ffm.to/yourwifeisdead.JOA";
 
-// Midnight Eastern on release day. 10/30 is still daylight time (EDT, -04:00);
-// DST ends 11/1.
-export const RELEASE_AT = new Date("2026-10-30T00:00:00-04:00");
-
-// Matches the approved invite art.
-export const SERVICE_DATE = "10/30";
-export const SERVICE_TIME = "Midnight EST";
-
-export function isReleased(now: Date = new Date()): boolean {
-  return now.getTime() >= RELEASE_AT.getTime();
-}
+// The invitation's headline slot. Read "10/30 / Midnight EST" until release.
+export const SERVICE_DATE = "Out Now";
+export const SERVICE_TIME = "Streaming Everywhere";
 
 // Approval gate. While true, /yourwifeisdead asks for a password (browser
 // prompt, any username), is marked noindex, and is left out of the sitemap.

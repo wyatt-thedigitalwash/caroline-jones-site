@@ -8,7 +8,7 @@ const siteUrl = "https://carolinejones.com";
 export const metadata: Metadata = {
   title: "Caroline Jones | Singer-Songwriter & Multi-Instrumentalist",
   description:
-    "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Good Omen, watch music videos, shop merch, and stay connected.",
+    "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Your Wife Is Dead and Good Omen, watch music videos, shop merch, and stay connected.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Caroline Jones | Singer-Songwriter & Multi-Instrumentalist",
     description:
-      "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Good Omen, watch music videos, shop merch, and stay connected.",
+      "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Your Wife Is Dead and Good Omen, watch music videos, shop merch, and stay connected.",
     url: siteUrl,
     siteName: "Caroline Jones",
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Caroline Jones | Singer-Songwriter & Multi-Instrumentalist",
     description:
-      "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Good Omen, watch music videos, shop merch, and stay connected.",
+      "Official site of Caroline Jones, singer-songwriter and multi-instrumentalist. Listen to Your Wife Is Dead and Good Omen, watch music videos, shop merch, and stay connected.",
     images: ["/og-image.png"],
   },
 };

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import { PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
+import { LISTEN_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
 
 // The invitation, opened. Two "pages": the lockup (garland arch framing "The
 // Funeral of Her.") and the details (date, the invitation line, RSVP, seal).
@@ -8,14 +8,12 @@ import { PRESAVE_URL, SERVICE_DATE, SERVICE_TIME } from "@/lib/funeral";
 // Lockup lettering is sized in cqw of the arch so it always sits inside the
 // vines; everything else is normal flow.
 //
-// The main-site splash reuses this with its own `cta` (Pre-Save, Enter Site
+// The main-site splash reuses this with its own `cta` (Listen Now, Enter Site
 // and the Terms notice) and an h2, since the homepage under it has the h1.
 export default function FuneralInvite({
-  released,
   cta,
   titleAs: Title = "h1",
 }: {
-  released: boolean;
   cta?: ReactNode;
   titleAs?: "h1" | "h2";
 }) {
@@ -69,9 +67,7 @@ export default function FuneralInvite({
             sizes="240px"
             className="fi-rule fi-rule-long"
           />
-          <p className="fi-caps fi-date">
-            <time dateTime="2026-10-30T00:00:00-04:00">{SERVICE_DATE}</time>
-          </p>
+          <p className="fi-caps fi-date">{SERVICE_DATE}</p>
           <p className="fi-caps fi-time">{SERVICE_TIME}</p>
           <Image
             src="/funeral/divider-short.png"
@@ -87,13 +83,13 @@ export default function FuneralInvite({
           {cta ?? (
             <>
               <p className="fi-cordial">You are cordially invited.</p>
-              <a href={PRESAVE_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
-                <span className="fi-rsvp-label">{released ? "Listen Now" : "Pre-Save to RSVP"}</span>
+              <a href={LISTEN_URL} target="_blank" rel="noopener noreferrer" className="fi-rsvp">
+                <span className="fi-rsvp-label">Listen Now</span>
                 <span className="sr-only"> (opens in new tab)</span>
               </a>
               <p className="fi-song">
-                {released ? "Listen to" : "Pre-save"} <cite>Your Wife Is Dead</cite>, the new song
-                from Caroline Jones.
+                Listen to <cite>Your Wife Is Dead</cite>, the new song from Caroline
+                Jones, out now.
               </p>
             </>
           )}

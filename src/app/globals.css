@@ -169,7 +169,7 @@ html:not(.splash-entered):not(.splash-exempt) body:has(#splash-overlay) {
   overflow: hidden;
 }
 
-/* Pre-Save and Enter Site, side by side where they fit. */
+/* Listen Now and Enter Site, side by side where they fit. */
 .fi-splash-actions {
   display: flex;
   flex-wrap: wrap;

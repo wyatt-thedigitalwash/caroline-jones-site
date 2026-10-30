@@ -49,7 +49,7 @@
 
 ## Page Structure (Single Page, Anchor Nav)
 Sections in order:
-1. Hero -- album art / banner, "Good Omen out now," Listen Now CTA
+1. Hero -- "Your Wife Is Dead" key art, "Out Now | Listen Now," Listen Now CTA
 2. Music -- album listing with covers and Listen Now links
 3. Videos -- 4 YouTube embeds
 4. Shop -- merch visual and external link
